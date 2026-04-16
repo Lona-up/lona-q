@@ -4,6 +4,7 @@ export default defineConfig({
   entry: {
     index: 'src/index.ts',
     react: 'src/react.ts',
+    'core/worker': 'src/core/worker.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,

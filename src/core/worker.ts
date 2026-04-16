@@ -1,7 +1,11 @@
 import SQLiteESMFactory from 'wa-sqlite/dist/wa-sqlite.mjs';
 import * as SQLite from 'wa-sqlite';
+// @ts-ignore wa-sqlite has no type declarations for VFS examples
 import { AccessHandlePoolVFS } from 'wa-sqlite/src/examples/AccessHandlePoolVFS.js';
 import type { WorkerRequest, WorkerResponse } from './types';
+
+// wa-sqlite の params 型 (SQLiteCompatibleType[] は export されていない)
+type SQLParams = (number | string | Uint8Array | number[] | bigint | null)[];
 
 let sqlite3: ReturnType<typeof SQLite.Factory>;
 let db: number;
@@ -154,7 +158,7 @@ async function handleImport(data: Uint8Array): Promise<void> {
     const placeholders = Array(colCount).fill('?').join(',');
     const insertSql = `INSERT INTO "${tableName}" VALUES (${placeholders})`;
     for (const row of rows) {
-      await sqlite3.run(db, insertSql, row);
+      await sqlite3.run(db, insertSql, row as SQLParams);
     }
   }
 }
@@ -172,7 +176,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 
       case 'run': {
         const { sql, params } = event.data;
-        await sqlite3.run(db, sql, params.length > 0 ? params : undefined);
+        await sqlite3.run(db, sql, params.length > 0 ? params as SQLParams : undefined);
         respond({ id, type: 'success' });
         notifyChange(sql);
         break;
@@ -181,7 +185,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       case 'query': {
         const { sql, params } = event.data;
         const { rows, columns } = await sqlite3.execWithParams(
-          db, sql, params.length > 0 ? params : undefined
+          db, sql, params.length > 0 ? params as SQLParams : undefined
         );
         const results = rows.map((row: unknown[]) => {
           const obj: Record<string, unknown> = {};

@@ -219,6 +219,10 @@ A: lona-q uses a leader election pattern to handle this safely. No data conflict
 - Safari 17+
 - Edge 102+
 
+## Acknowledgments
+
+lona-q is built on [wa-sqlite](https://github.com/rhashimoto/wa-sqlite) by Roy T. Hashimoto (MIT License) — a WebAssembly build of SQLite.
+
 ## License
 
 MIT

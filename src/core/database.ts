@@ -160,7 +160,7 @@ export async function createDB(
   // Web Locks API が使えればリーダー選出でマルチタブ対応
   if (typeof navigator !== 'undefined' && navigator.locks) {
     const { transport, cleanup: _cleanup } = await electLeader(dbName, () =>
-      new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
+      new Worker(new URL('./worker.js', import.meta.url), { type: 'module' })
     );
     db = new LonaQDatabaseImpl(transport);
 
@@ -169,7 +169,7 @@ export async function createDB(
   } else {
     // フォールバック: シングルタブモード（Web Locks 非対応環境）
     const worker = new Worker(
-      new URL('./worker.ts', import.meta.url),
+      new URL('./worker.js', import.meta.url),
       { type: 'module' }
     );
     const channel = new BroadcastChannel(`lona-q:${dbName}`);
