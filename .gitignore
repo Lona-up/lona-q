@@ -1,0 +1,5 @@
+node_modules/
+dist/
+CLAUDE.md
+package-lock.json
+example/
